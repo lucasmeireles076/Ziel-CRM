@@ -1,75 +1,131 @@
-# Ziel-CRM
+# ZielHub CRM • Operação Comercial & Vitgold Suplementos
 
-Teste de CRM
+Plataforma inteligente de CRM omnichannel, gestão comercial, análise de e-commerce e atendimento automatizado via IA Open Source (**Sofia**) com integração direta ao WhatsApp e ao catálogo oficial da **Vitgold Brasil** (`vitgold.com.br`).
 
-## Mini-CRM Inteligente
+---
 
-MVP de CRM open source com pipeline de vendas, conversas sincronizadas pelo WhatsApp, respostas assistidas por Ollama e conectores preparados para Mercado Livre e Amazon.
+## 🚀 Principais Módulos & Recursos
 
-## Stack
+### 1. Central de Conversas Omnichannel & SDR Sofia
+- **Sofia, SDR da Vitgold:** Usa um modelo local com contexto multi-turn e consulta as páginas oficiais de produtos para fundamentar respostas; quando não encontra a informação, responde “Vou verificar”.
+- **WhatsApp Conectado em Tempo Real:** O QR Code, status, mensagens recebidas e envio de respostas ficam integrados diretamente na tela Conversas.
+- **Auto-Pilot WhatsApp:** A SDR pode responder automaticamente aos clientes pelo WhatsApp enquanto o servidor local está ativo.
 
-- **API:** Python 3.11+, FastAPI, Pydantic Settings, SQLAlchemy 2 assíncrono e PostgreSQL/pgvector.
-- **Jobs:** Celery + Redis para a rotina diária de reativação.
-- **Painel:** Next.js App Router, TypeScript, Tailwind CSS, CSS responsivo e Lucide.
-- **Canais:** Evolution API v2 para WhatsApp; stubs desabilitados para Mercado Livre e Amazon.
-- **IA:** Ollama local com `qwen2.5:7b` (configurável).
+### 2. Perfis Dinâmicos com Troca nos Avatares (Fotos)
+- **Lucas • ZielHub Admin:**
+  - Visão executiva de negócios, BI & Forecast, Pipeline Kanban comercial e gestão de metas.
+  - Identidade visual oficial da **ZielHub**: Obsidian (`#030711`), Ciano Elétrico (`#4EC5E8`) e Azul Técnico (`#2E86D0`) — *Zero Roxo*.
+- **Sofia • Vitgold Operacional:**
+  - Visão focada no e-commerce de suplementos, pedidos, giro de estoque por SKU (K2 MK-7, Cálcio+D3, Cranberry, Ômega 3 IFOS, Magnésio Dimalato).
+  - Menus reordenados colocando a operação de loja no topo.
+  - Diretriz visual estrita: **opções ativas em vermelho (`#DC2626`)** e **hover em azul (`#2563EB`)**.
 
-## Iniciar localmente com Docker
+### 3. Pipeline Kanban & Lead Scoring
+- Pipeline estilo Kanban comercial com drag-and-drop (*hold & drop*) entre etapas.
+- Sistema de Lead Scoring com pontuação em tempo real, critérios de engajamento e histórico.
 
-1. Execute `setup.cmd` para instalar as dependências do projeto (Python e frontend) e criar `.env` a partir do exemplo. O arquivo `.env` fica fora do Git; revise e altere as senhas locais antes de publicar qualquer serviço.
+### 4. Inteligência & E-commerce
+- **Painel Operacional Vitgold:** Faturamento, frascos vendidos, prescritores/nutris e dias de cobertura de estoque.
+- **Importador de Planilhas:** Importação e conversão de arquivos Excel/CSV em dashboards analíticos.
+- **Equipe Vitgold:** Controle de ponto, tempo de uso e tags de função.
 
-   Também é possível preparar apenas a configuração sem instalar dependências:
+---
 
-   ```powershell
-   Copy-Item .env.example .env
-   ```
+## 📸 Demonstração Visual da Plataforma
 
-2. Edite `.env` e troque `POSTGRES_PASSWORD` e `EVOLUTION_API_KEY`. Os valores precisam ser consistentes com `DATABASE_URL` se você alterar o usuário, senha ou nome do banco.
+| Pipeline Kanban Comercial (Hold & Drop) | Painel BI & Forecast |
+| :---: | :---: |
+| ![Pipeline Kanban](docs/screenshots/pipeline-kanban.png) | ![Painel BI](docs/screenshots/bi-forecast.png) |
 
-3. Instale e inicie o Ollama no host. Baixe e execute o modelo uma vez:
+| Central de Atendimento & Sofia IA | Análise de E-commerce Vitgold |
+| :---: | :---: |
+| ![Conversas Omnichannel](docs/screenshots/conversas.png) | ![Análise E-commerce](docs/screenshots/ecommerce-rd.png) |
 
-   ```powershell
-   ollama run qwen2.5:7b
-   ```
+| Gestão da Equipe (Uso, Tempo & Tags) | Importador Inteligente de Planilhas |
+| :---: | :---: |
+| ![Equipe Vitgold](docs/screenshots/equipe-vitgold.png) | ![Importador Planilhas](docs/screenshots/importador-planilha.png) |
 
-   Deixe o serviço Ollama ativo. No Docker Desktop para Windows, `host.docker.internal` permite que a API alcance o Ollama do host. Para vLLM ou outra instância, ajuste `OLLAMA_URL` e o endpoint de geração em `backend/app/services/ai_agent.py`.
+---
 
-4. Na raiz do projeto, construa e inicie os serviços:
+## 🛠️ Tecnologias Utilizadas
 
-   ```powershell
-   .\start.cmd
-   ```
+- **Frontend:** React 19, TypeScript, Tailwind CSS v4, Vite 8, Lucide React, Canvas Confetti.
+- **Backend:** Node.js (ESM), Express 5, CORS.
+- **WhatsApp Engine:** `@whiskeysockets/baileys` (v7), `qrcode`.
+- **IA Engine:** Motor neural híbrido multi-turn local com indexação RAG do catálogo Vitgold e integração generativa.
 
-   Ou rode diretamente `docker compose up --build`.
+---
 
-   O painel estará em <http://localhost:3000>, a documentação interativa da API em <http://localhost:8000/docs> e o Evolution Manager em <http://localhost:8080>. O worker Celery executa a rotina de reativação diariamente.
+## 💻 Como Rodar o Projeto
 
-5. Na tela **Conexões**, clique em **Gerar QR Code**. O backend cria (ou reutiliza) a instância `crm` na Evolution API e configura o webhook interno. No WhatsApp do celular, abra **Dispositivos conectados → Conectar dispositivo** e escaneie o QR Code exibido.
+### Pré-requisitos
+- Node.js 18+ (recomendado Node 20 ou 24)
+- NPM
 
-6. Envie uma mensagem de teste ao número conectado. O contato e a interação devem aparecer no pipeline e na central de conversas. A resposta automática requer o Ollama ativo e o modelo já baixado.
+### Instalação
+```bash
+# Clone o repositório
+git clone https://github.com/lucasmeireles076/crm_zielhub.git
 
-## Rotas principais
+# Acesse a pasta
+cd crm_zielhub
 
-- `POST /api/v1/whatsapp/webhook` — recebe `MESSAGES_UPSERT`, grava lead/histórico, gera resposta contextual e responde pelo WhatsApp.
-- `GET /api/v1/whatsapp/connection` e `POST /api/v1/whatsapp/connect` — estado da instância e pareamento.
-- `GET/POST /api/v1/leads`, `PATCH /api/v1/leads/{id}`, `GET /api/v1/leads/{id}/interactions` e `POST /api/v1/leads/{id}/messages`.
-- `GET /api/v1/reports` — indicadores de mensagens, conversão e reativação.
-- `GET/POST /api/v1/meli/webhook` e `GET/POST /api/v1/amazon/webhook` — respostas de verificação e stubs que registram eventos desabilitados e retornam sucesso.
-
-## Observações do MVP
-
-- As respostas da IA instruem o modelo a não inventar preços ou estoque e a encaminhar dúvidas sem informação confirmada. Estoque e preços não são consultados por este MVP.
-- O job de reativação seleciona leads com última interação há mais de `REACTIVATION_DAYS`, exclui negócios fechados/perdidos e leads com pedidos. A integração deve estar conectada para que o envio funcione.
-- Mercado Livre e Amazon ficam desabilitados por padrão (`MELI_ENABLED=false`, `AMAZON_ENABLED=false`). Os adaptadores ainda precisam das implementações OAuth/LWA/SQS antes de operar em produção.
-- O esquema é criado automaticamente na inicialização para facilitar testes. Para produção, adicione migrações Alembic, autenticação de usuários e gestão segura de segredos antes de expor o serviço.
-- O histórico mantém embeddings pgvector opcionais, mas a geração/busca semântica ainda não está ativada.
-
-## Executar sem Docker (desenvolvimento)
-
-Com PostgreSQL com extensão pgvector e Redis disponíveis, `setup.cmd` instala as dependências. Para iniciar a API e o frontend localmente:
-
-```powershell
-.\start-local.cmd
+# Instale as dependências
+npm install
 ```
 
-O script inicia a API e o frontend; PostgreSQL e Redis precisam estar disponíveis localmente e as URLs correspondentes configuradas em `.env`.
+### Ativar conversa generativa local da Sofia
+Para respostas abertas e contextualizadas, instale o [Ollama](https://ollama.com/download) e baixe o modelo configurado:
+```bash
+ollama pull qwen2.5:3b
+```
+Mantenha o Ollama em execução. No CRM, a tela **Agente IA** permite verificar a conexão, escolher outro modelo instalado e salvar as configurações. Sem o Ollama, saudações e algumas consultas simples continuam funcionando, mas perguntas abertas recebem um aviso em vez de uma resposta inventada.
+
+### Execução em Desenvolvimento
+Você pode iniciar o projeto de duas formas:
+
+#### Opção A: Execução Unificada (Script Windows)
+Clique duas vezes no arquivo `INICIAR_CRM.bat` na raiz do projeto.
+
+#### Opção B: Terminal Manual
+```bash
+# Terminal 1: Iniciar o Frontend Vite
+npm run dev
+
+# Terminal 2: Iniciar o Servidor WhatsApp & IA
+npm run server
+```
+
+- **Frontend:** [http://localhost:5173/](http://localhost:5173/)
+- **Backend API & WhatsApp:** [http://localhost:3001/](http://localhost:3001/)
+
+---
+
+## 📂 Estrutura de Pastas
+
+```
+VITGOLD_CRM/
+├── server/
+│   ├── open-source-ai-engine.js  # Motor conversacional da Sofia & RAG Vitgold
+│   ├── whatsapp-bot.js           # Servidor Express & Baileys WhatsApp Socket
+│   └── unified-runner.js         # Orquestrador local do backend
+├── src/
+│   ├── components/               # Telas e componentes do CRM
+│   │   ├── Header.tsx            # Header com troca de perfil nas fotos
+│   │   ├── Sidebar.tsx           # Menu vertical reordenável por perfil
+│   │   ├── ConversasView.tsx     # Central de atendimento omnichannel
+│   │   ├── VitgoldDashboard.tsx  # Dashboard operacional exclusivo Vitgold
+│   │   ├── FunisView.tsx         # Pipeline Kanban hold & drop
+│   │   ├── AgenteIAView.tsx      # Configuração e testes da IA
+│   │   └── ...
+│   ├── types/                    # Definições de tipos TypeScript
+│   ├── App.tsx                   # Roteamento e orquestração de perfis
+│   └── main.tsx
+├── DESIGN.md                     # Fonte da verdade de tokens visuais
+└── package.json
+```
+
+---
+
+## 📄 Licença & Propriedade
+Projeto desenvolvido para a operação **ZielHub CRM** & **Vitgold Brasil**. Todos os direitos reservados.
